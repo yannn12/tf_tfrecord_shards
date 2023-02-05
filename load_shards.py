@@ -1,0 +1,8 @@
+files = tf.io.matching_files(tfrecords_pattern_path)
+files = tf.random.shuffle(files)
+shards = tf.data.Dataset.from_tensor_slices(files)
+dataset = shards.interleave(tf.data.TFRecordDataset)
+dataset = dataset.shuffle(buffer_size=10000)
+dataset = dataset.map(map_func=self.parse_tfrecord, num_parallel_calls=tf.data.experimental.AUTOTUNE)
+dataset = dataset.batch(batch_size)
+dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
